@@ -1,0 +1,167 @@
+﻿YH-Hsuan Huang, Caio Carminatti Pantaleao
+Student Number: 200443723, 200437139
+Advanced Database - 02 - Assignemnt 1
+ 
+ 
+Question 1
+Select the records where the peson lives in Los Angeles and also has information in the AddessLine2
+
+SELECT [AddressID], [AddressLine1], [AddressLine2], [City]
+	FROM [Person].[Address]
+	WHERE City = 'Los Angeles' AND AddressLine2 IS NOT NULL;
+ 
+AddressID   AddressLine1                                                 AddressLine2                                                 City
+----------- ------------------------------------------------------------ ------------------------------------------------------------ ------------------------------
+12037       1 Smiling Tree Court                                         Space 55                                                     Los Angeles
+13970       1085 Greenbelt Way                                           Unit B-105                                                   Los Angeles
+323         7651 Smiling Tree Court                                      Space 55                                                     Los Angeles
+
+(3 rows affected)
+
+ 
+ 
+Question 2
+Select the records where the peson lives in Los Angeles or Toronto and also has information in the AddessLine2
+
+SELECT [AddressID], [AddressLine1], [AddressLine2], [City]
+	FROM [Person].[Address]
+	WHERE City in('Los Angeles', 'Toronto') AND AddressLine2 IS NOT NULL;
+ 
+AddressID   AddressLine1                                                 AddressLine2                                                 City
+----------- ------------------------------------------------------------ ------------------------------------------------------------ ------------------------------
+12037       1 Smiling Tree Court                                         Space 55                                                     Los Angeles
+13970       1085 Greenbelt Way                                           Unit B-105                                                   Los Angeles
+538         25 Danger Street West                                        Floor 7                                                      Toronto
+323         7651 Smiling Tree Court                                      Space 55                                                     Los Angeles
+
+(4 rows affected)
+
+ 
+ 
+Question 3
+Select the records where the peson lives in Los Angeles or Toronto and also has information in the AddessLine2
+
+SELECT [AddressID], [AddressLine1], [AddressLine2], [City]
+	FROM [Person].[Address]
+	WHERE City in('Los Angeles', 'Toronto', 'Downey') AND AddressLine2 IS NOT NULL;
+ 
+AddressID   AddressLine1                                                 AddressLine2                                                 City
+----------- ------------------------------------------------------------ ------------------------------------------------------------ ------------------------------
+12037       1 Smiling Tree Court                                         Space 55                                                     Los Angeles
+13970       1085 Greenbelt Way                                           Unit B-105                                                   Los Angeles
+538         25 Danger Street West                                        Floor 7                                                      Toronto
+14229       279 Inverness Drive                                          Unit C3                                                      Downey
+12719       5379 Treasure Island Way                                     Bldg 14                                                      Downey
+323         7651 Smiling Tree Court                                      Space 55                                                     Los Angeles
+12766       771 Northridge Drive                                         # 495                                                        Downey
+
+(7 rows affected)
+
+ 
+ 
+Question 4 - A
+Select the Product Cost History which Standard Cost between 100 and 120 sorts according to modified date.
+
+SELECT * 
+	FROM [Production].[ProductCostHistory]
+	WHERE StandardCost BETWEEN 100 AND 120
+	ORDER BY ModifiedDate;
+ 
+ProductID   StartDate               EndDate                 StandardCost          ModifiedDate
+----------- ----------------------- ----------------------- --------------------- -----------------------
+950         2013-05-30 00:00:00.000 NULL                    113.8816              2013-05-16 00:00:00.000
+804         2012-05-30 00:00:00.000 2013-05-29 00:00:00.000 101.8936              2013-05-29 00:00:00.000
+819         2012-05-30 00:00:00.000 2013-05-29 00:00:00.000 110.2829              2013-05-29 00:00:00.000
+824         2012-05-30 00:00:00.000 2013-05-29 00:00:00.000 104.7951              2013-05-29 00:00:00.000
+829         2012-05-30 00:00:00.000 2013-05-29 00:00:00.000 108.7844              2013-05-29 00:00:00.000
+
+(5 rows affected)
+
+ 
+Question 4 - B
+Select the Product Cost History which Standard Cost greater than 2000.
+
+SELECT * 
+	FROM [Production].[ProductCostHistory]
+	WHERE StandardCost > 2000
+	ORDER BY ModifiedDate;
+ 
+ProductID   StartDate               EndDate                 StandardCost          ModifiedDate
+----------- ----------------------- ----------------------- --------------------- -----------------------
+749         2011-05-31 00:00:00.000 2012-05-29 00:00:00.000 2171.2942             2012-05-29 00:00:00.000
+750         2011-05-31 00:00:00.000 2012-05-29 00:00:00.000 2171.2942             2012-05-29 00:00:00.000
+751         2011-05-31 00:00:00.000 2012-05-29 00:00:00.000 2171.2942             2012-05-29 00:00:00.000
+752         2011-05-31 00:00:00.000 2012-05-29 00:00:00.000 2171.2942             2012-05-29 00:00:00.000
+753         2011-05-31 00:00:00.000 2012-05-29 00:00:00.000 2171.2942             2012-05-29 00:00:00.000
+
+(5 rows affected)
+
+ 
+ 
+Question 5
+Select the person who first name start with B and Last name start with RU, end with LL
+
+SELECT TOP 10 [BusinessEntityID], [FirstName], [LastName], [ModifiedDate]
+	FROM [Person].[Person]
+	WHERE LastName LIKE 'RU%LL' AND FirstName LIKE 'B%';
+ 
+BusinessEntityID FirstName                                          LastName                                           ModifiedDate
+---------------- -------------------------------------------------- -------------------------------------------------- -----------------------
+6727             Benjamin                                           Russell                                            2013-10-28 00:00:00.000
+13618            Blake                                              Russell                                            2014-01-19 00:00:00.000
+6921             Brandon                                            Russell                                            2013-07-06 00:00:00.000
+19278            Brianna                                            Russell                                            2014-01-22 00:00:00.000
+7212             Brittany                                           Russell                                            2014-05-26 00:00:00.000
+
+(5 rows affected)
+
+ 
+ 
+Question 6
+Select the person who first name only three characters and Last name end with LL
+
+SELECT TOP 10 [BusinessEntityID], [FirstName], [LastName], [ModifiedDate]
+	FROM [Person].[Person]
+	WHERE LastName LIKE '%LL' AND FirstName LIKE '___';
+ 
+BusinessEntityID FirstName                                          LastName                                           ModifiedDate
+---------------- -------------------------------------------------- -------------------------------------------------- -----------------------
+15046            Ian                                                Bell                                               2013-09-11 00:00:00.000
+8740             Zoe                                                Bell                                               2013-12-23 00:00:00.000
+4763             Ian                                                Campbell                                           2014-04-20 00:00:00.000
+10341            Jay                                                Gill                                               2014-02-11 00:00:00.000
+11065            Joe                                                Gill                                               2012-06-15 00:00:00.000
+14414            Lee                                                Gill                                               2014-05-20 00:00:00.000
+2697             Max                                                Gill                                               2013-11-22 00:00:00.000
+11169            Roy                                                Gill                                               2014-03-22 00:00:00.000
+1007             Don                                                Hall                                               2013-06-30 00:00:00.000
+118              Don                                                Hall                                               2009-02-06 00:00:00.000
+
+(10 rows affected)
+
+ 
+ 
+Question 7
+Select the person who first name only three characters and Last name end with LL (also show the two columns: today's day and total days past from the modified date)
+
+SELECT TOP 10 [BusinessEntityID], [FirstName], [LastName], [ModifiedDate], getdate() AS Today, CAST(GETDATE() - [ModifiedDate] AS INT) AS 'Days Past'
+	FROM [Person].[Person]
+	WHERE LastName LIKE '%LL' AND FirstName LIKE '___';
+ 
+BusinessEntityID FirstName                                          LastName                                           ModifiedDate            Today                   Days Past
+---------------- -------------------------------------------------- -------------------------------------------------- ----------------------- ----------------------- -----------
+15046            Ian                                                Bell                                               2013-09-11 00:00:00.000 2021-02-03 17:45:36.960 2703
+8740             Zoe                                                Bell                                               2013-12-23 00:00:00.000 2021-02-03 17:45:36.960 2600
+4763             Ian                                                Campbell                                           2014-04-20 00:00:00.000 2021-02-03 17:45:36.960 2482
+10341            Jay                                                Gill                                               2014-02-11 00:00:00.000 2021-02-03 17:45:36.960 2550
+11065            Joe                                                Gill                                               2012-06-15 00:00:00.000 2021-02-03 17:45:36.960 3156
+14414            Lee                                                Gill                                               2014-05-20 00:00:00.000 2021-02-03 17:45:36.960 2452
+2697             Max                                                Gill                                               2013-11-22 00:00:00.000 2021-02-03 17:45:36.960 2631
+11169            Roy                                                Gill                                               2014-03-22 00:00:00.000 2021-02-03 17:45:36.960 2511
+1007             Don                                                Hall                                               2013-06-30 00:00:00.000 2021-02-03 17:45:36.960 2776
+118              Don                                                Hall                                               2009-02-06 00:00:00.000 2021-02-03 17:45:36.960 4381
+
+(10 rows affected)
+
+
+Completion time: 2021-02-03T17:45:37.0623525-05:00
