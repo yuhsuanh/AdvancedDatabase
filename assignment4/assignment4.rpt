@@ -1,0 +1,207 @@
+﻿YH-Hsuan Huang, Caio Carminatti Pantaleao
+Student Number: 200443723, 200437139
+Advanced Database - 02 - Assignemnt 4
+ 
+ 
+Question 1
+Delete Adventureworks and create it again (Restore). 
+
+DROP DATABASE Adventureworks2017;
+
+Show the first and last names of the persons in the Person.Person table. We need the one with the first names staring with ?mb?without any middle name.
+
+SELECT FirstName, LastName 
+FROM Person.Person
+WHERE FirstName LIKE "Amb%" AND MiddleName IS NULL;
+ 
+FirstName                                          LastName
+-------------------------------------------------- --------------------------------------------------
+Amber                                              Adams
+Amber                                              Baker
+Amber                                              Campbell
+Amber                                              Evans
+Amber                                              Green
+Amber                                              Hall
+Amber                                              Hernandez
+Amber                                              Lopez
+Amber                                              Parker
+Amber                                              Phillips
+Amber                                              Turner
+
+(11 rows affected)
+
+ 
+ 
+Question 2
+Update the Title and the ModifiedDate of all records that have the full name equal Amy Alberts.
+
+UPDATE Person.Person
+SET Title = "Ms.",
+	ModifiedDate = GETDATE()
+WHERE FirstName = "Amy" AND LastName = "Alberts" AND Title IS NULL
+ 
+
+(2 rows affected)
+ 
+ 
+Question 3
+Join three tabels in order to retrieve all the information needed.
+
+SELECT TOP (20) FirstName, LastName, Title,  BE.BusinessEntityID, AddressID
+FROM Person.person P JOIN Person.BusinessEntity BE
+ON P.BusinessEntityID = BE.BusinessEntityID
+JOIN Person.BusinessEntityAddress BEA
+ON P.BusinessEntityID = BEA.BusinessEntityID;L
+ 
+FirstName                                          LastName                                           Title    BusinessEntityID AddressID
+-------------------------------------------------- -------------------------------------------------- -------- ---------------- -----------
+Roberto                                            Tamburello                                         NULL     3                224
+Rob                                                Walters                                            NULL     4                11387
+Gail                                               Erickson                                           Ms.      5                190
+Jossef                                             Goldberg                                           Mr.      6                286
+Dylan                                              Miller                                             NULL     7                49
+Diane                                              Margheim                                           NULL     8                230
+Gigi                                               Matthew                                            NULL     9                187
+Michael                                            Raheem                                             NULL     10               11386
+Ovidiu                                             Cracium                                            NULL     11               32505
+Thierry                                            D'Hers                                             NULL     12               1
+Janice                                             Galvin                                             Ms.      13               219
+Michael                                            Sullivan                                           NULL     14               295
+Sharon                                             Salavaria                                          NULL     15               287
+David                                              Bradley                                            NULL     16               214
+Kevin                                              Brown                                              NULL     17               234
+John                                               Wood                                               NULL     18               209
+Mary                                               Dempsey                                            NULL     19               174
+Wanida                                             Benshoof                                           NULL     20               191
+Terry                                              Eminhizer                                          NULL     21               171
+Sariya                                             Harnpadoungsataya                                  NULL     22               233
+
+(20 rows affected)
+
+ 
+ 
+Question 5
+Create a View with 5 columns.
+
+CREATE VIEW PurchaseView
+AS
+SELECT TOP (10) POH.PurchaseOrderID, VendorID, OrderQty, UnitPrice, OrderDate
+FROM Purchasing.PurchaseOrderHeader POH JOIN Purchasing.PurchaseOrderDetail POD
+ON POH.PurchaseOrderID = POD.PurchaseOrderID
+ 
+ 
+
+SELECT *
+FROM PurchaseView
+PurchaseOrderID VendorID    OrderQty UnitPrice             OrderDate
+--------------- ----------- -------- --------------------- -----------------------
+1               1580        4        50.26                 2011-04-16 00:00:00.000
+2               1496        3        45.12                 2011-04-16 00:00:00.000
+2               1496        3        45.5805               2011-04-16 00:00:00.000
+3               1494        550      16.086                2011-04-16 00:00:00.000
+4               1650        3        57.0255               2011-04-16 00:00:00.000
+5               1654        550      37.086                2011-04-30 00:00:00.000
+6               1664        550      26.5965               2011-04-30 00:00:00.000
+7               1678        550      27.0585               2011-04-30 00:00:00.000
+7               1678        550      33.579                2011-04-30 00:00:00.000
+7               1678        550      46.0635               2011-04-30 00:00:00.000
+
+(10 rows affected)
+
+ 
+ 
+Question 6
+A) Create a trigger.
+CREATE TRIGGER PurchaseOrderDetail_UPDATE
+ON Purchasing.PurchaseOrderDetail
+AFTER UPDATE
+AS
+BEGIN
+	SET NOCOUNT ON;
+	DECLARE @PurchaseOrderDetailID INT
+	
+	SELECT @PurchaseOrderDetailID = INSERTED.PurchaseOrderDetailID
+	FROM INSERTED
+
+	UPDATE Purchasing.PurchaseOrderDetail
+	SET ModifiedDate = GETDATE()
+	WHERE PurchaseOrderDetailID = @PurchaseOrderDetailID
+
+	PRINT("The PurchaseOrderDetail with PurchaseOrderDetailID has been update")
+END
+ 
+
+Question 6
+B) Update all the modified date and show results.
+
+UPDATE Purchasing.PurchaseOrderDetail
+SET RejectedQty = 0.0;
+
+SELECT TOP (20) *
+FROM Purchasing.PurchaseOrderDetail;
+The PurchaseOrderDetail has been update
+
+(8845 rows affected)
+PurchaseOrderID PurchaseOrderDetailID DueDate                 OrderQty ProductID   UnitPrice             LineTotal             ReceivedQty                             RejectedQty                             StockedQty                              ModifiedDate
+--------------- --------------------- ----------------------- -------- ----------- --------------------- --------------------- --------------------------------------- --------------------------------------- --------------------------------------- -----------------------
+1               1                     2011-04-30 00:00:00.000 4        1           50.26                 201.04                3.00                                    0.00                                    3.00                                    2021-04-11 15:16:03.840
+2               2                     2011-04-30 00:00:00.000 3        359         45.12                 135.36                3.00                                    0.00                                    3.00                                    2021-04-11 15:16:02.250
+2               3                     2011-04-30 00:00:00.000 3        360         45.5805               136.7415              3.00                                    0.00                                    3.00                                    2021-04-11 15:16:02.250
+3               4                     2011-04-30 00:00:00.000 550      530         16.086                8847.30               550.00                                  0.00                                    550.00                                  2021-04-11 15:16:02.250
+4               5                     2011-04-30 00:00:00.000 3        4           57.0255               171.0765              2.00                                    1.00                                    1.00                                    2021-04-11 15:16:02.250
+5               6                     2011-05-14 00:00:00.000 550      512         37.086                20397.30              550.00                                  0.00                                    550.00                                  2021-04-11 15:16:02.250
+6               7                     2011-05-14 00:00:00.000 550      513         26.5965               14628.075             468.00                                  0.00                                    468.00                                  2021-04-11 15:16:02.250
+7               8                     2011-05-14 00:00:00.000 550      317         27.0585               14882.175             550.00                                  0.00                                    550.00                                  2021-04-11 15:16:02.250
+7               9                     2011-05-14 00:00:00.000 550      318         33.579                18468.45              550.00                                  0.00                                    550.00                                  2021-04-11 15:16:02.250
+7               10                    2011-05-14 00:00:00.000 550      319         46.0635               25334.925             550.00                                  0.00                                    550.00                                  2021-04-11 15:16:02.250
+8               11                    2011-05-14 00:00:00.000 3        403         47.4705               142.4115              3.00                                    0.00                                    3.00                                    2021-04-11 15:16:02.250
+8               12                    2011-05-14 00:00:00.000 3        404         45.3705               136.1115              3.00                                    0.00                                    3.00                                    2021-04-11 15:16:02.250
+8               13                    2011-05-14 00:00:00.000 3        405         49.644                148.932               3.00                                    0.00                                    3.00                                    2021-04-11 15:16:02.250
+8               14                    2011-05-14 00:00:00.000 3        406         45.3705               136.1115              3.00                                    0.00                                    3.00                                    2021-04-11 15:16:02.250
+8               15                    2011-05-14 00:00:00.000 3        407         43.2705               129.8115              3.00                                    0.00                                    3.00                                    2021-04-11 15:16:02.250
+9               16                    2011-12-28 00:00:00.000 3        422         47.523                142.569               3.00                                    0.00                                    3.00                                    2021-04-11 15:16:02.250
+9               17                    2011-12-28 00:00:00.000 3        423         45.423                136.269               3.00                                    0.00                                    3.00                                    2021-04-11 15:16:02.250
+9               18                    2011-12-28 00:00:00.000 3        424         49.6965               149.0895              3.00                                    0.00                                    3.00                                    2021-04-11 15:16:02.250
+9               19                    2011-12-28 00:00:00.000 3        425         45.423                136.269               3.00                                    0.00                                    3.00                                    2021-04-11 15:16:02.250
+9               20                    2011-12-28 00:00:00.000 3        426         43.323                129.969               3.00                                    0.00                                    3.00                                    2021-04-11 15:16:02.250
+
+(20 rows affected)
+
+ 
+ 
+Question 7
+Compare tables information using CASE and JOIN.
+
+SELECT FirstName, 
+	   LastName, 
+	   SalesYTD,  
+	   SalesLastYear, 
+	   (SalesYTD-SalesLastYear) AS Compare, 
+	   CASE WHEN (SalesYTD-SalesLastYear) > 0 THEN "Need more bonus" ELSE "No bonus" END AS Bonus
+FROM Sales.SalesPerson SP JOIN Person.Person P
+ON SP.BusinessEntityID = P.BusinessEntityID;
+ 
+FirstName                                          LastName                                           SalesYTD              SalesLastYear         Compare               Bonus
+-------------------------------------------------- -------------------------------------------------- --------------------- --------------------- --------------------- ---------------
+Stephen                                            Jiang                                              559697.5639           0.00                  559697.5639           Need more bonus
+Michael                                            Blythe                                             3763178.1787          1750406.4785          2012771.7002          Need more bonus
+Linda                                              Mitchell                                           4251368.5497          1439156.0291          2812212.5206          Need more bonus
+Jillian                                            Carson                                             3189418.3662          1997186.2037          1192232.1625          Need more bonus
+Garrett                                            Vargas                                             1453719.4653          1620276.8966          -166557.4313          No bonus
+Tsvi                                               Reiter                                             2315185.611           1849640.9418          465544.6692           Need more bonus
+Pamela                                             Ansman-Wolfe                                       1352577.1325          1927059.178           -574482.0455          No bonus
+Shu                                                Ito                                                2458535.6169          2073505.9999          385029.617            Need more bonus
+José                                               Saraiva                                            2604540.7172          2038234.6549          566306.0623           Need more bonus
+David                                              Campbell                                           1573012.9383          1371635.3158          201377.6225           Need more bonus
+Tete                                               Mensa-Annan                                        1576562.1966          0.00                  1576562.1966          Need more bonus
+Syed                                               Abbas                                              172524.4512           0.00                  172524.4512           Need more bonus
+Lynn                                               Tsoflias                                           1421810.9242          2278548.9776          -856738.0534          No bonus
+Amy                                                Alberts                                            519905.932            0.00                  519905.932            Need more bonus
+Rachel                                             Valdez                                             1827066.7118          1307949.7917          519116.9201           Need more bonus
+Jae                                                Pak                                                4116871.2277          1635823.3967          2481047.831           Need more bonus
+Ranjit                                             Varkey Chudukatil                                  3121616.3202          2396539.7601          725076.5601           Need more bonus
+
+(17 rows affected)
+
+
+Completion time: 2021-04-11T15:16:03.9105191-04:00
